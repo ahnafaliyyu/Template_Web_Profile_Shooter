@@ -13,6 +13,14 @@ import {
 /** Teks yang tampil ke pengunjung: Indonesia wajib, Inggris opsional. */
 export type L = { id: string; en?: string };
 
+/** Data tambahan profil yang jarang berubah; semuanya bisa diubah lewat admin. */
+export type ProfileExtra = {
+  email?: string;
+  location?: string;
+  tags?: string[];
+  links?: { label: string; url: string }[];
+};
+
 const createdAt = () => timestamp("created_at", { withTimezone: true }).defaultNow().notNull();
 const updatedAt = () => timestamp("updated_at", { withTimezone: true }).defaultNow().notNull();
 
@@ -23,7 +31,7 @@ export const profile = pgTable("profile", {
   bio: jsonb("bio").$type<L>().notNull(),
   availability: jsonb("availability").$type<L>(),
   focus: jsonb("focus").$type<L>(),
-  extra: jsonb("extra").$type<Record<string, unknown>>(),
+  extra: jsonb("extra").$type<ProfileExtra>(),
   updatedAt: updatedAt(),
 });
 

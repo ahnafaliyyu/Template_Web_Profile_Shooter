@@ -1,7 +1,5 @@
 import type { Metadata, Viewport } from "next";
 import { Newsreader } from "next/font/google";
-import Cursor from "@/components/Cursor";
-import Loader from "@/components/Loader";
 import "./globals.css";
 
 const serif = Newsreader({ subsets: ["latin"], variable: "--font-serif", display: "swap" });
@@ -22,11 +20,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <script dangerouslySetInnerHTML={{ __html: boot }} />
       </head>
       <body>
-        <Loader />
-        <Cursor />
         {children}
         <noscript>
-          <style>{`.frame{opacity:1!important;transform:none!important}.ld{display:none}`}</style>
+          <style>{`.frame{opacity:1!important;transform:none!important}.ld{display:none}.nm span,.hero .rv,.tm p{animation:none!important}`}</style>
         </noscript>
       </body>
     </html>

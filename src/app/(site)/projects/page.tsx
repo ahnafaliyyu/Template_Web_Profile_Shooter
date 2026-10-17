@@ -1,7 +1,7 @@
 import { listProjects } from "@/server/modules/projects/service";
 import ProjectBrowser from "./ProjectBrowser";
 
-export const revalidate = 3600; // nanti diperbarui seketika oleh admin lewat revalidate
+export const revalidate = 3600;
 export const metadata = { title: "Projects" };
 
 export default async function ProjectsPage() {

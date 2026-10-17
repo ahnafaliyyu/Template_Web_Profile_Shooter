@@ -6,9 +6,10 @@ const STATUS = { aktif: "Aktif", selesai: "Selesai", konsep: "Konsep" } as const
 const ACCESS = { publik: "Publik", privat: "Privat" } as const;
 
 /** Daftar, dosir, dan spesifikasi. Di layar kecil menjadi dua langkah (daftar lalu dosir). */
-export default function ProjectBrowser({ items }: { items: ProjectView[] }) {
-  const [cur, setCur] = useState(0);
-  const [detail, setDetail] = useState(false);
+export default function ProjectBrowser({ items, initial }: { items: ProjectView[]; initial?: string }) {
+  const start = Math.max(0, items.findIndex((p) => p.slug === initial));
+  const [cur, setCur] = useState(start);
+  const [detail, setDetail] = useState(!!initial);
   const n = items.length;
   if (!n) return <p className="mu">Belum ada karya yang diterbitkan.</p>;
 
@@ -17,6 +18,7 @@ export default function ProjectBrowser({ items }: { items: ProjectView[] }) {
   const pick = (i: number) => {
     setCur(i);
     setDetail(true);
+    history.replaceState(null, "", `/projects/${items[i].slug}`); // tautan bisa dibagikan tanpa muat ulang
     document.getElementById("mn")?.scrollTo(0, 0);
   };
 
@@ -38,9 +40,9 @@ export default function ProjectBrowser({ items }: { items: ProjectView[] }) {
           <button className="btn o s bk" data-t onClick={() => { setDetail(false); document.getElementById("mn")?.scrollTo(0, 0); }}>← Daftar</button>
           <span className="chs"><span className="chip">{STATUS[p.status]}</span><span className="chip">{ACCESS[p.access]}</span></span>
           <span className="nv">
-            <button className="btn o s" data-t aria-label="Karya sebelumnya" onClick={() => go(cur - 1)}>←</button>
+            <button className="btn o s" data-t aria-label="Karya sebelumnya" onClick={() => { go(cur - 1); history.replaceState(null, "", `/projects/${items[(cur - 1 + n) % n].slug}`); }}>←</button>
             <span>Karya {cur + 1} dari {n}</span>
-            <button className="btn o s" data-t aria-label="Karya berikutnya" onClick={() => go(cur + 1)}>→</button>
+            <button className="btn o s" data-t aria-label="Karya berikutnya" onClick={() => { go(cur + 1); history.replaceState(null, "", `/projects/${items[(cur + 1) % n].slug}`); }}>→</button>
           </span>
         </div>
         <div className="db swap" key={p.slug}>

@@ -11,6 +11,7 @@ export type ProjectRecord = {
   status: Status;
   access: Access;
   progress: number;
+  featured: boolean;
   framework: string | null;
   stack: string[];
   title: L;
@@ -26,6 +27,7 @@ export type ProjectView = {
   status: Status;
   access: Access;
   progress: number;
+  featured: boolean;
   framework: string;
   stack: string[];
   title: string;

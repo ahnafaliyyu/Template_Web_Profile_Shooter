@@ -10,6 +10,7 @@ const toView = (r: ProjectRecord, locale: Locale): ProjectView => ({
   status: r.status,
   access: r.access,
   progress: r.progress,
+  featured: r.featured,
   framework: r.framework ?? "",
   stack: r.stack,
   title: pick(r.title, locale),
