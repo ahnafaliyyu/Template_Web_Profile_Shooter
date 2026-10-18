@@ -12,7 +12,8 @@
     "db:seed": "tsx --env-file=.env.local src/server/db/seed.ts",
     "doctor": "tsx --env-file=.env.local scripts/doctor.ts",
     "db:restore": "tsx --env-file=.env.local scripts/restore.ts",
-    "check": "tsc --noEmit"
+    "check": "tsc --noEmit",
+    "dev:fast": "next dev --turbopack"
   },
   "dependencies": {
     "@neondatabase/serverless": "^1.0.0",

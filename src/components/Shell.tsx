@@ -13,9 +13,45 @@ export default function Shell({ children, locale, d, settings }: { children: Rea
   const path = usePathname();
   const [open, setOpen] = useState(false);
   const main = useRef<HTMLElement>(null);
+  const [busy, setBusy] = useState(false);
+  const [out, setOut] = useState(false);
+  const timers = useRef<{ show?: number; hide?: number; guard?: number; exit?: number }>({});
+  const shownAt = useRef(0);
   const other: Locale = locale === "id" ? "en" : "id";
 
-  useEffect(() => { setOpen(false); main.current?.scrollTo(0, 0); }, [path]);
+  // Animasi antarhalaman: bidikan yang sama dengan loader awal, hanya di area konten.
+  // - Muncul bila perpindahan melebihi 120 ms (halaman cepat tidak berkedip).
+  // - Terus berputar selama halaman belum berganti, berapa pun lamanya.
+  // - Baru berakhir SETELAH jalur halaman berganti (usePathname), dengan jeda minimal 450 ms.
+  const clearAll = () => Object.values(timers.current).forEach((t) => clearTimeout(t));
+  const dismiss = () => {
+    setOut(true);
+    timers.current.exit = window.setTimeout(() => { setBusy(false); setOut(false); shownAt.current = 0; }, 260);
+  };
+  const begin = () => {
+    clearAll();
+    setOut(false);
+    timers.current.show = window.setTimeout(() => { shownAt.current = Date.now(); setBusy(true); }, 120);
+    timers.current.guard = window.setTimeout(dismiss, 30000); // hanya jaring pengaman bila perpindahan gagal total
+  };
+  const finish = () => {
+    clearTimeout(timers.current.show);
+    clearTimeout(timers.current.guard);
+    if (!shownAt.current) return; // layar loading belum sempat tampil: tidak ada yang perlu ditutup
+    const left = Math.max(0, 450 - (Date.now() - shownAt.current));
+    clearTimeout(timers.current.hide);
+    timers.current.hide = window.setTimeout(dismiss, left);
+  };
+  const onClickCapture = (e: React.MouseEvent) => {
+    if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+    const a = (e.target as Element).closest?.("a[href]") as HTMLAnchorElement | null;
+    if (!a || a.target === "_blank" || a.hasAttribute("download")) return;
+    const u = new URL(a.href, location.href);
+    if (u.origin !== location.origin || u.pathname === location.pathname) return;
+    begin();
+  };
+
+  useEffect(() => { setOpen(false); main.current?.scrollTo(0, 0); finish(); }, [path]);
   useEffect(() => {
     const esc = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false);
     addEventListener("keydown", esc);
@@ -36,7 +72,7 @@ export default function Shell({ children, locale, d, settings }: { children: Rea
 
   return (
     <div className="app">
-      <div className="frame">
+      <div className="frame" onClickCapture={onClickCapture}>
         <header className="hd">
           <Link className="br" href={href(locale)} data-t><i className="sq" />A. Ahnaf / 2026 <span className="chip">{settings.locChip}</span></Link>
           <div className="hr">
@@ -67,6 +103,12 @@ export default function Shell({ children, locale, d, settings }: { children: Rea
         <div className={"sc" + (open ? " on" : "")} onClick={() => setOpen(false)} />
 
         <main className="mn" id="mn" ref={main}>{children}</main>
+        {busy && (
+          <div className={"tv" + (out ? " out" : "")} role="status" aria-live="polite">
+            <div className="fr"><b /><b /><b /><b /></div>
+            <p>{d.loading}</p>
+          </div>
+        )}
 
         <footer className="ft-b"><span>{settings.footerLeft}</span><span>{settings.footerRight}</span></footer>
       </div>

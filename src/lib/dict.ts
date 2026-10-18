@@ -4,7 +4,7 @@ const id = {
   // navigasi dan bingkai
   nHome: "Beranda", nAbout: "Tentang", nProjects: "Karya", nSkills: "Skill", nCreds: "Kredensial", nGuest: "Buku tamu", nContact: "Kontak",
   menu: "Menu", dirTitle: "Index Directory", nodeSynced: "Node: synced", latency: "Latency", theme: "Ganti tema", contactAria: "Kontak", langAria: "Ganti bahasa",
-  seeAll: "Semua →", noData: "Belum ada data.",
+  seeAll: "Semua →", noData: "Belum ada data.", loading: "Memuat…",
   // home
   homeOv: "Index_root // Dossier_01", iBuild: "Saya membangun", ctaProjects: "Lihat arsip karya ↗", ctaContact: "Hubungi saya",
   mProjects: "Karya terbit", mTech: "Teknologi", mFields: "Bidang", mPubs: "Publikasi",
@@ -45,7 +45,7 @@ type Dict = typeof id;
 const en: Dict = {
   nHome: "Home", nAbout: "About", nProjects: "Projects", nSkills: "Skills", nCreds: "Credentials", nGuest: "Guestbook", nContact: "Contact",
   menu: "Menu", dirTitle: "Index Directory", nodeSynced: "Node: synced", latency: "Latency", theme: "Toggle theme", contactAria: "Contact", langAria: "Switch language",
-  seeAll: "See all →", noData: "No data yet.",
+  seeAll: "See all →", noData: "No data yet.", loading: "Loading…",
   homeOv: "Index_root // Dossier_01", iBuild: "I build", ctaProjects: "View project archive ↗", ctaContact: "Contact me",
   mProjects: "Published works", mTech: "Technologies", mFields: "Fields", mPubs: "Publications",
   featured: "Featured work", allWorks: "All works →", openDossier: "Open dossier ↗", sysLog: "System log", arsenal: "Arsenal", allSkills: "All skills →",
