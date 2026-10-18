@@ -4,7 +4,7 @@ import * as repo from "./repo";
 
 export type ProfileView = {
   name: string; role: string; bio: string; availability: string; focus: string;
-  email: string; location: string; tags: string[]; links: { label: string; url: string }[];
+  email: string; location: string; tags: string[]; links: { label: string; url: string }[]; photo: string;
 };
 
 const toView = (p: typeof sampleProfile | NonNullable<Awaited<ReturnType<typeof repo.get>>>, locale: Locale): ProfileView => ({
@@ -17,6 +17,7 @@ const toView = (p: typeof sampleProfile | NonNullable<Awaited<ReturnType<typeof 
   location: p.extra?.location ?? "",
   tags: p.extra?.tags ?? [],
   links: p.extra?.links ?? [],
+  photo: p.extra?.photo ?? "",
 });
 
 export async function getProfile(locale: Locale = "id"): Promise<ProfileView> {

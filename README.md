@@ -1,47 +1,37 @@
 # Portofolio Ahnaf
 
-Next.js (App Router) + TypeScript + PostgreSQL (Neon) + Drizzle ORM + Auth.js. Desain mengikuti Figma "Technical Dossier".
+Next.js (App Router) + TypeScript + PostgreSQL (Neon) + Drizzle ORM + Auth.js. Desain mengikuti Figma "Technical Dossier". Dua bahasa (`/id`, `/en`).
 
-## Menjalankan
+**Mulai di sini:** baca [`PANDUAN.md`](./PANDUAN.md) untuk langkah lengkap: database, login admin, unggah gambar, deploy, pemakaian harian, cadangan, dan pemecahan masalah.
+
+## Ringkas
 
 ```bash
 npm install
-cp .env.example .env.local      # isi sesuai komentar di dalamnya
-npm run dev
+cp .env.example .env.local
+npm run dev          # situs jalan dengan data contoh tanpa database
+npm run doctor       # memeriksa pengaturan
+npm run db:migrate   # buat tabel
+npm run db:seed      # isi data contoh
 ```
 
-Tanpa `DATABASE_URL`, situs publik tetap jalan memakai data cadangan di `src/server/db/sample.ts`.
+## Perintah
 
-## Database
-
-```bash
-npm run db:migrate    # terapkan migrasi di folder drizzle/
-npm run db:seed       # isi proyek contoh (opsional)
-npm run db:generate   # buat migrasi baru setelah mengubah schema.ts
-```
-
-## Admin dan dashboard
-
-Buka `/admin`. Login lewat GitHub; hanya username di `ADMIN_GITHUB_USERS` yang diterima.
-
-1. Di GitHub: Settings → Developer settings → OAuth Apps → New. Callback URL: `{alamat-situs}/api/auth/callback/github`
-2. Isi `AUTH_GITHUB_ID`, `AUTH_GITHUB_SECRET`, `AUTH_SECRET` (`npx auth secret`), `ADMIN_GITHUB_USERS`.
-
-Yang bisa dikelola: profil dan status ketersediaan (termasuk kalimat yang berganti di Home), proyek (draf, terbit, unggulan, urutan, dua bahasa), skill, kredensial, moderasi buku tamu. Setiap simpan langsung memperbarui halaman publik tanpa deploy ulang. Semua perubahan tercatat di audit log dan tampil di dashboard.
+| Perintah | Fungsi |
+|---|---|
+| `npm run dev` / `build` / `start` | jalankan, bangun, sajikan |
+| `npm run check` | cek tipe TypeScript |
+| `npm run doctor` | periksa env dan database |
+| `npm run db:generate` | buat migrasi dari `schema.ts` |
+| `npm run db:migrate` | terapkan migrasi |
+| `npm run db:seed` | isi data contoh |
+| `npm run db:restore -- berkas.json` | pulihkan cadangan |
 
 ## Struktur
 
-- `src/app/(site)` halaman publik; bingkai tetap ada di `components/Shell.tsx`
-- `src/app/admin` login + panel (dilindungi di layout DAN di setiap server action lewat `lib/guard.ts`)
+- `src/app/[locale]` halaman publik; bingkai tetap di `components/Shell.tsx`
+- `src/app/admin` login dan panel (dijaga di layout dan di setiap aksi lewat `lib/guard.ts`)
 - `src/server/db` skema, klien, data contoh, seed
-- `src/server/modules/<modul>` pola `repo · service · actions`; hanya repo yang menyentuh database
-- `src/components` Shell, Cursor, Loader, HeroReticle, RoleSwap, GuestbookForm
-- `src/app/api/health` untuk pemantau uptime
-
-## Deploy (Vercel)
-
-Hubungkan repo GitHub ke Vercel, isi variabel lingkungan yang sama, jalankan `npm run db:migrate` sekali terhadap database produksi. Pasang pemantau uptime (mis. UptimeRobot) pada `/api/health`.
-
-## Belum ada
-
-Halaman versi Inggris berbasis rute (`/en`), unggah media, riwayat versi dan jadwal terbit, statistik kunjungan, tabel navigasi/pesan masuk/statistik manual (skemanya sebagian sudah ada), backup terjadwal, pengecekan deploy di dashboard.
+- `src/server/modules/<modul>` pola `repo · service · actions`
+- `src/lib/dict.ts` seluruh teks tetap dua bahasa
+- `scripts/` doctor dan restore

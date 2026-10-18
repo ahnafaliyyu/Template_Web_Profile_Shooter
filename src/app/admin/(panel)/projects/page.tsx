@@ -19,7 +19,7 @@ export default async function AdminProjects() {
                 <td className="mu">{p.sortOrder}</td>
                 <td><b>{p.title.id}</b>{p.featured && <span className="chip" style={{ marginLeft: 8 }}>Unggulan</span>}</td>
                 <td>{p.status}</td><td>{p.access}</td>
-                <td><form action={togglePublished.bind(null, p.id, !p.published)}><button className="btn o s">{p.published ? "Terbit · tarik" : "Draf · terbitkan"}</button></form></td>
+                <td><form action={togglePublished.bind(null, p.id, !p.published)}><button className="btn o s">{p.published ? (p.publishedAt && p.publishedAt > new Date() ? "Terjadwal · tarik" : "Terbit · tarik") : "Draf · terbitkan"}</button></form></td>
                 <td><Link href={`/admin/projects/${p.id}`}>Edit</Link></td>
               </tr>
             ))}

@@ -2,6 +2,7 @@ import type { L } from "@/server/db/schema";
 
 export type Status = "aktif" | "selesai" | "konsep";
 export type Access = "publik" | "privat";
+export type Img = { url: string; alt: string };
 
 /** Bentuk data proyek di lapisan server (sama untuk database dan data cadangan). */
 export type ProjectRecord = {
@@ -17,6 +18,7 @@ export type ProjectRecord = {
   title: L;
   summary: L;
   note: L | null;
+  images: Img[];
 };
 
 /** Bentuk data yang dikirim ke komponen tampilan (sudah satu bahasa). */
@@ -33,4 +35,5 @@ export type ProjectView = {
   title: string;
   summary: string;
   note: string;
+  images: Img[];
 };

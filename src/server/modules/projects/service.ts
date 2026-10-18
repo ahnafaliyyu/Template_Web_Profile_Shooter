@@ -16,6 +16,7 @@ const toView = (r: ProjectRecord, locale: Locale): ProjectView => ({
   title: pick(r.title, locale),
   summary: pick(r.summary, locale),
   note: pick(r.note, locale),
+  images: r.images,
 });
 
 /** Situs tetap tampil walau database mati atau belum diatur: jatuh ke data cadangan. */

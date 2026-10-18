@@ -18,6 +18,10 @@ export default async function AdminCredentials({ searchParams }: { searchParams:
           <label>Judul (Inggris)<input name="title_en" /></label>
         </div>
         <div className="f2">
+          <label>Deskripsi (Indonesia)<textarea name="desc_id" rows={3} /></label>
+          <label>Deskripsi (Inggris)<textarea name="desc_en" rows={3} /></label>
+        </div>
+        <div className="f2">
           <label>Penerbit atau institusi<input name="issuer" /></label>
           <label>Tautan (opsional)<input name="url" placeholder="https://" /></label>
         </div>

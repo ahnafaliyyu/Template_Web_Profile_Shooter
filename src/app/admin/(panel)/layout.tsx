@@ -7,6 +7,7 @@ export const dynamic = "force-dynamic";
 const NAV: [string, string][] = [
   ["/admin", "Ringkasan"], ["/admin/profile", "Profil dan status"], ["/admin/projects", "Proyek"],
   ["/admin/skills", "Skill"], ["/admin/credentials", "Kredensial"], ["/admin/guestbook", "Buku tamu"],
+  ["/admin/messages", "Pesan masuk"], ["/admin/settings", "Tampilan situs"], ["/admin/backup", "Cadangan"],
 ];
 
 export default async function Panel({ children }: { children: React.ReactNode }) {

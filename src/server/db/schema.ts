@@ -1,5 +1,6 @@
 import {
   boolean,
+  date,
   integer,
   jsonb,
   pgTable,
@@ -19,6 +20,7 @@ export type ProfileExtra = {
   location?: string;
   tags?: string[];
   links?: { label: string; url: string }[];
+  photo?: string;
 };
 
 const createdAt = () => timestamp("created_at", { withTimezone: true }).defaultNow().notNull();
@@ -83,20 +85,12 @@ export const credentials = pgTable("credentials", {
   id: serial("id").primaryKey(),
   kind: text("kind", { enum: ["pendidikan", "sertifikat", "publikasi", "penghargaan"] }).notNull(),
   title: jsonb("title").$type<L>().notNull(),
+  description: jsonb("description").$type<L>(),
   issuer: text("issuer"),
   year: integer("year"),
   url: text("url"),
   sortOrder: integer("sort_order").notNull().default(0),
   published: boolean("published").notNull().default(false),
-});
-
-export const stats = pgTable("stats", {
-  key: varchar("key", { length: 60 }).primaryKey(),
-  label: jsonb("label").$type<L>().notNull(),
-  mode: text("mode", { enum: ["auto", "manual"] }).notNull().default("manual"),
-  value: text("value"),
-  source: text("source"),
-  visible: boolean("visible").notNull().default(true),
 });
 
 export const siteSettings = pgTable("site_settings", {
@@ -120,5 +114,47 @@ export const auditLog = pgTable("audit_log", {
   action: text("action").notNull(),
   entity: text("entity").notNull(),
   entityId: text("entity_id"),
+  createdAt: createdAt(),
+});
+
+export const projectMedia = pgTable("project_media", {
+  id: serial("id").primaryKey(),
+  projectId: integer("project_id").notNull().references(() => projects.id, { onDelete: "cascade" }),
+  url: text("url").notNull(),
+  alt: text("alt").notNull().default(""),
+  sortOrder: integer("sort_order").notNull().default(0),
+  createdAt: createdAt(),
+});
+
+export const contactMessages = pgTable("contact_messages", {
+  id: serial("id").primaryKey(),
+  name: varchar("name", { length: 80 }).notNull(),
+  email: varchar("email", { length: 160 }).notNull(),
+  subject: varchar("subject", { length: 160 }).notNull(),
+  message: text("message").notNull(),
+  status: text("status", { enum: ["baru", "dibalas", "arsip"] }).notNull().default("baru"),
+  ipHash: text("ip_hash"),
+  createdAt: createdAt(),
+});
+
+/** Statistik kunjungan agregat: tanpa cookie, tanpa IP, hanya hitungan per hari, halaman, dan negara. */
+export const pageViewsDaily = pgTable(
+  "page_views_daily",
+  {
+    day: date("day", { mode: "string" }).notNull(),
+    path: varchar("path", { length: 200 }).notNull(),
+    country: varchar("country", { length: 2 }).notNull().default("??"),
+    views: integer("views").notNull().default(0),
+  },
+  (t) => [primaryKey({ columns: [t.day, t.path, t.country] })],
+);
+
+/** Riwayat versi: salinan lama tiap kali proyek atau profil diubah, supaya bisa dipulihkan. */
+export const contentRevisions = pgTable("content_revisions", {
+  id: serial("id").primaryKey(),
+  entity: text("entity").notNull(),
+  entityId: text("entity_id").notNull(),
+  snapshot: jsonb("snapshot").$type<unknown>().notNull(),
+  actor: text("actor").notNull(),
   createdAt: createdAt(),
 });

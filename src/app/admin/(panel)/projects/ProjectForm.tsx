@@ -28,6 +28,7 @@ export default function ProjectForm({ action, v }: { action: (fd: FormData) => P
       </div>
       <label>Kerangka<input name="framework" defaultValue={v?.framework ?? ""} /></label>
       <label>Stack (pisahkan dengan koma)<input name="stack" defaultValue={v?.stack.join(", ")} /></label>
+      <label>Jadwal terbit (opsional, waktu UTC)<input name="publish_at" type="datetime-local" defaultValue={v?.publishedAt && v.publishedAt > new Date() ? v.publishedAt.toISOString().slice(0, 16) : ""} /><small className="mu">Kosongkan untuk terbit sekarang. WIB = UTC+7, WITA = UTC+8. Halaman publik diperbarui paling lambat 10 menit setelah jadwal.</small></label>
       <div className="row">
         <label className="ck"><input type="checkbox" name="published" defaultChecked={v?.published} />Terbitkan di situs</label>
         <label className="ck"><input type="checkbox" name="featured" defaultChecked={v?.featured} />Karya unggulan (tampil di Home)</label>

@@ -1,7 +1,8 @@
 import { eq } from "drizzle-orm";
 import { requireDb } from "./client";
-import { sampleProjects } from "./sample";
-import { projects, projectTechnologies, technologies } from "./schema";
+import { count } from "drizzle-orm";
+import { sampleCredentials, sampleProfile, sampleProjects, sampleSkills } from "./sample";
+import { credentials, profile, projects, projectTechnologies, skills, technologies } from "./schema";
 
 async function main() {
   const db = requireDb();
@@ -23,7 +24,13 @@ async function main() {
       await db.insert(projectTechnologies).values({ projectId: row.id, technologyId: t.id }).onConflictDoNothing();
     }
   }
-  console.log(`Seed selesai: ${sampleProjects.length} proyek.`);
+  // Profil, skill, dan kredensial contoh hanya diisi bila masih kosong, supaya tidak menimpa yang sudah kamu ubah di admin.
+  await db.insert(profile).values({ id: 1, ...sampleProfile }).onConflictDoNothing();
+  const [sk] = await db.select({ n: count() }).from(skills);
+  if (!sk.n) await db.insert(skills).values(sampleSkills.map((s, i) => ({ ...s, sortOrder: i })));
+  const [cr] = await db.select({ n: count() }).from(credentials);
+  if (!cr.n) await db.insert(credentials).values(sampleCredentials.map((c, i) => ({ ...c, sortOrder: i, published: true })));
+  console.log(`Seed selesai: ${sampleProjects.length} proyek, profil, skill, dan kredensial contoh.`);
 }
 
 main().catch((e) => { console.error(e); process.exit(1); });
